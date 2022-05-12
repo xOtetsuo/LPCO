@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import  OrbitControls  from 'three-orbit-controls';
 
 
-
 class Loader {
   constructor() {
     this.callback = null;
@@ -30,13 +29,13 @@ class Loader {
 
 class App {
   constructor() {
-    this.loader = new Loader();
+    
     
 
     this.playIntro = document.querySelector('.play-intro');
-    
-
-    this.loader.load('./dd.mp3');
+    const audioTune = new Audio('./dd.mp3');
+    this.loader = new Loader();
+    this.loader.load(audioTune);
     this.loader.complete = this.complete.bind(this);
 
     this.count = 0;
@@ -129,22 +128,22 @@ class App {
   play() {
     this.audioCtx.resume();
     this.audioElement.play();
-    this.btnPlay.classList.remove('control-show');
-    this.btnPause.classList.add('control-show');
+    
   }
+  
 
   pause() {
     this.audioElement.pause();
-    this.btnPause.classList.remove('control-show');
-    this.btnPlay.classList.add('control-show');
+   
   }
 
   createScene() {
+    const container = document.getElementById('visual')
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xe2a3ea);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true  });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(container.clientWidth, container.clientHeight);
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -264,11 +263,12 @@ class App {
   }
 
   setupAudio() {
-    this.audioElement = document.getElementById('audio');
+    const audioTune = new Audio('./dd.mp3');
+    this.audioElement = audioTune;
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     this.analyser = this.audioCtx.createAnalyser();
 
-    this.source = this.audioCtx.createMediaElementSource(this.audioElement);
+    this.source = this.audioCtx.createMediaElementSource(audioTune);
     this.source.connect(this.analyser);
     this.source.connect(this.audioCtx.destination);
 

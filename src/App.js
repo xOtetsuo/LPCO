@@ -109,7 +109,9 @@ function ChatRoom() {
     <div>
       <div className='row'>
         <div className='col-lg-9 col-md-9 col-sm-9'>
-            <div  className='container visualizer-container'>
+            <div id="visual"  className='container visualizer-container'>
+           
+           <visual></visual>
             <div class="loader"></div>
     <audio id="audio" crossOrigin="anonymous"></audio>
             <div class="controls">
