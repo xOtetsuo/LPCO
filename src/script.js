@@ -1,7 +1,9 @@
 import * as THREE from 'three';
-import { OrbitControls } from '@three-ts/orbit-controls';
 import { gsap } from "gsap";
-import Audiofile from './dd.mp3';
+import  OrbitControls  from 'three-orbit-controls';
+
+
+
 class Loader {
   constructor() {
     this.callback = null;
@@ -14,7 +16,6 @@ class Loader {
     request.onprogress = evt => {
       let percent = Math.round(evt.loaded / evt.total * 100);
 
-  
     };
 
     request.onload = () => {this.complete(file);};
@@ -27,20 +28,20 @@ class Loader {
 
 
 
-class Visualizer {
+class App {
   constructor() {
     this.loader = new Loader();
-    const mp3 = new Audio(Audiofile);
-
+    
 
     this.playIntro = document.querySelector('.play-intro');
-    this.loaderBar = document.querySelector('.loader');
+    
 
-    this.loader.load(mp3.Audio);
+    this.loader.load('./dd.mp3');
     this.loader.complete = this.complete.bind(this);
 
     this.count = 0;
-    this.playing = true;
+    this.percent = 0;
+    this.playing = false;
 
     this.objects = [];
   }
@@ -89,9 +90,14 @@ class Visualizer {
     this.btnPlay = document.querySelector('.play');
     this.btnPause = document.querySelector('.pause');
 
-  
-    
-  };
+    this.btnPlay.addEventListener('click', () => {
+      this.play();
+    });
+
+    this.btnPause.addEventListener('click', () => {
+      this.pause();
+    });
+  }
 
   createRingOfSquares(count, radius, color, group) {
     const size = 0.6;
@@ -136,14 +142,14 @@ class Visualizer {
   createScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xe2a3ea);
-    this.container = document.getElementById('vs');
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas  });
-    this.renderer.setSize(300, 300);
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true  });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    this.container.appendChild(this.renderer.domElement);
+    document.body.appendChild(this.renderer.domElement);
   }
 
   createCamera() {
@@ -213,6 +219,7 @@ class Visualizer {
 
     this.scene.add(spotLight);
 
+    const spotLightHelper = new THREE.SpotLightHelper(spotLight);
   }
 
   addAmbientLight() {
@@ -244,7 +251,7 @@ class Visualizer {
         const s = this.objects[i];
         const z = s.position;
 
-        gsap.to(z, .2, { 
+        gsap.to(z, .2, {
           y: p / 30 });
 
       }
@@ -257,9 +264,7 @@ class Visualizer {
   }
 
   setupAudio() {
-    const mp3 = new Audio(Audiofile);
-
-    this.audioElement = mp3;
+    this.audioElement = document.getElementById('audio');
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     this.analyser = this.audioCtx.createAnalyser();
 
@@ -297,4 +302,4 @@ class Visualizer {
   }}
 
 
-window.app = new Visualizer();
+window.app = new App();
